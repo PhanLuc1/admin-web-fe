@@ -1,29 +1,31 @@
-import logo from './logo.svg';
+import React, { useContext } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import AuthContext from './contexts/AuthContext';
 import routes from './router';
-import { Route, Routes, BrowserRouter } from 'react-router-dom';
+import Login from './pages/login';
 import NotFound from './pages/404';
-import Home from './pages/home';
-import Users from './pages/users';
-import { useState } from 'react';
 import MainLayout from './pages/layouts';
 
-function App() {
-  const [isAuth, setIsAuth] = useState(true); // TODO: Update authentication
+const App = () => {
+  const { isAuth, authorities } = useContext(AuthContext);
 
-
-  return ( <div>
-  <BrowserRouter>
-    <Routes>
-      <Route path='/' element={isAuth ? <MainLayout/> : <p>Login</p>}>
-        {
-          routes.map(route => <Route path={route.path} key={route.path} element={route.component} />)
-        }
-        <Route path='*' element={NotFound}/>
-      </Route>
-    </Routes>
-  </BrowserRouter>
-    </div>
+  return (
+      <Routes>
+        {isAuth ? (
+            <Route path="/" element={<MainLayout />}>
+              {routes.map(route => {
+                const hasAccess = route.roles.some(role => authorities.includes(role));
+                return hasAccess ? (
+                    <Route key={route.path} path={route.path} element={route.component} />
+                ) : null;
+              })}
+              <Route path="*" element={<NotFound />} />
+            </Route>
+        ) : (
+            <Route path="/login" element={<Login />} />
+        )}
+      </Routes>
   );
-}
+};
 
 export default App;

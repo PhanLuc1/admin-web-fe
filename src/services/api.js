@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const apiService = (() => {
-    const API_BASE_URL = 'https://your-api-domain.com/api';
+    const API_BASE_URL = 'http://localhost:8080/api';
 
-    const TOKEN_KEY = 'authToken';
+    const TOKEN_KEY = 'token';
 
     const axiosInstance = axios.create({
         baseURL: API_BASE_URL,

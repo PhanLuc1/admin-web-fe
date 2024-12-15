@@ -12,14 +12,16 @@ const routes = [
         path: '/',
         icon: <HomeOutlined />,
         component: <HomePage/>,
-        children: []
+        children: [],
+        roles: ["ROLE_ADMIN", "ROLE_USER"]
     },
     {
         label: 'Users',
         path: '/users',
         icon: <UserOutlined />,
         component: <UsersPage/>,
-        children: []
+        children: [],
+        roles: ["ROLE_ADMIN"]
     }
 ]
 
