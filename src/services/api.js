@@ -25,7 +25,7 @@ const apiService = (() => {
     );
 
     axiosInstance.interceptors.response.use(
-        (response) => response.data,
+        (response) => response,
         (error) => {
             if (error.response) {
                 if (error.response.status === 401) {

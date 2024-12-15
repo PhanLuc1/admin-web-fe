@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ProTable } from "@ant-design/pro-table";
 import axios from "axios";
+import apiService from "../../services/api";
 
 const Users = () => {
     const [pageSize, setPageSize] = useState(20);
@@ -40,6 +41,10 @@ const Users = () => {
             filters["name.contains"] = params.name;
         }
 
+        if (params.id) {
+            filters["id.equals"] = params.id;
+        }
+
         // Nếu có "amount", thêm bộ lọc equals
         if (params.amount) {
             filters["amount.equals"] = params.amount;
@@ -57,17 +62,10 @@ const Users = () => {
                     // Xây dựng bộ lọc JHipster
                     const filters = buildJHipsterFilters(params);
 
-                    // Gửi request với các tham số
-                    const response = await axios.get("http://localhost:8080/api/products", {
-                        params: {
-                            page: params.current - 1,
-                            size: params.pageSize,
-                            ...filters, // Thêm bộ lọc vào query params
-                        },
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTczMzkxMDkwMywiYXV0aCI6IlJPTEVfQURNSU4gUk9MRV9VU0VSIiwiaWF0IjoxNzMzODI0NTAzfQ.1RXQD4j5UI33MyfsEIICh9HI3XhKZi93YoQrgBltY0ylPGSXcBuMJ33CgajPa7VL6kyoUtknoQnAhZZ0MU6DKA",
-                        },
+                    const response = await apiService.get("products", {
+                        page: params.current - 1,
+                        size: params.pageSize,
+                        ...filters, // Thêm bộ lọc vào query params
                     });
 
                     return {

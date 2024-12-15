@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, {useContext, useEffect} from 'react';
 import { Routes, Route } from 'react-router-dom';
 import AuthContext from './contexts/AuthContext';
 import routes from './router';
@@ -8,6 +8,9 @@ import MainLayout from './pages/layouts';
 
 const App = () => {
   const { isAuth, authorities } = useContext(AuthContext);
+
+  console.log("isAuth", isAuth);
+  useEffect(() => {})
 
   return (
       <Routes>

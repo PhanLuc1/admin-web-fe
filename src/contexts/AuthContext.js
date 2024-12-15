@@ -10,14 +10,16 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    console.log("isAuth context", isAuth);
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
             apiService.get('account')
                 .then((res) => {
-                    if (res.activated) {
+                    if (res.data.activated) {
                         setIsAuth(true);
-                        setAuthorities(res.authorities || []);
+                        setAuthorities(res.data.authorities || []);
                     }
                 })
                 .catch(() => setIsAuth(false))
@@ -36,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuth, authorities, setIsAuth, loginRedirect }}>
+        <AuthContext.Provider value={{ isAuth, authorities, setIsAuth, setAuthorities, loginRedirect }}>
             {!loading ? children : <p>Loading...</p>}
         </AuthContext.Provider>
     );
