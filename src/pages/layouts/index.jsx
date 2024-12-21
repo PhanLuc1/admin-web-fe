@@ -6,7 +6,7 @@ const { Content } = Layout;
 
 const MainLayout = () => {
     return <>
-    <Layout className="max-h-screen overflow-hidden">
+    <Layout className="max-h-screen overflo-w-hidden">
     <SideBar/>
     <Layout className="h-screen">
         <MyHeader/>

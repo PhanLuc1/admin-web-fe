@@ -12,7 +12,7 @@ const Login = () => {
     const onFinish = (values) => {
         apiService.post('authenticate', { ...values }).then((res) => {
             // Store the token in local storage
-            localStorage.setItem("token", res.id_token);
+            localStorage.setItem("token", res.data.id_token);
 
             // Fetch user details after successful login
             apiService.get('account').then((userRes) => {

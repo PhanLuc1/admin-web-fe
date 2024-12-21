@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { ProTable } from "@ant-design/pro-table";
 import axios from "axios";
 import apiService from "../../services/api";
+import {Link} from "react-router-dom";
+import {Button, Popconfirm} from "antd";
 
-const Users = () => {
+const Bills = () => {
     const [pageSize, setPageSize] = useState(20);
 
     const columns = [
@@ -24,19 +26,55 @@ const Users = () => {
             dataIndex: "price",
             key: "price",
             valueType: "money",
+            sorter: true,
         },
         {
             title: "Amount",
             dataIndex: "amount",
             key: "amount",
             valueType: "digit", // Sử dụng trong form search
+            sorter: true,
+        },
+        {
+            title: "",
+            dataIndex: "action",
+            key: "action",
+            render: (text, record) => <div className="flex gap-2">
+                <Link to={`/bills/${record.id}`}>
+                    <Button color="primary" variant="outlined" htmlType="button">
+                        View
+                    </Button>
+                </Link>
+                <Link to={`/bills/${record.id}/edit`}>
+                    <Button type="primary" htmlType="button">
+                        Edit
+                    </Button>
+                </Link>
+                <Popconfirm
+                    title="Are you sure to delete this bill?"
+                    onConfirm={() => handleDelete(record.id)}
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button color="danger" variant="filled" htmlType="button">
+                        Delete
+                    </Button>
+                </Popconfirm>
+            </div>
         },
     ];
+
+    const handleDelete = async (id) => {
+        try {
+            await apiService.delete(`/bills/${id}`);
+        } catch (error) {
+            console.error("Error deleting bill:", error);
+        }
+    };
 
     const buildJHipsterFilters = (params) => {
         const filters = {};
 
-        // Nếu có "name", thêm bộ lọc chứa "contains"
         if (params.name) {
             filters["name.contains"] = params.name;
         }
@@ -45,12 +83,10 @@ const Users = () => {
             filters["id.equals"] = params.id;
         }
 
-        // Nếu có "amount", thêm bộ lọc equals
         if (params.amount) {
             filters["amount.equals"] = params.amount;
         }
 
-        // Thêm các bộ lọc khác nếu cần
         return filters;
     };
 
@@ -61,10 +97,15 @@ const Users = () => {
                 try {
                     // Xây dựng bộ lọc JHipster
                     const filters = buildJHipsterFilters(params);
+                    let sort = '';
+                    if (params.sort && params.order) {
+                        sort = `${params.sort},${params.order === 'ascend' ? 'asc' : 'desc'}`;
+                    }
 
-                    const response = await apiService.get("products", {
+                    const response = await apiService.get("bills", {
                         page: params.current - 1,
                         size: params.pageSize,
+                        sort: sort,
                         ...filters, // Thêm bộ lọc vào query params
                     });
 
@@ -95,9 +136,9 @@ const Users = () => {
                 labelWidth: "auto",
             }}
             dateFormatter="string"
-            headerTitle="Product List"
+            headerTitle="Bill List"
         />
     );
 };
 
-export default Users;
+export default Bills;

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import apiService from '../services/api';
 
 const AuthContext = createContext();
@@ -9,8 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [authorities, setAuthorities] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
-    console.log("isAuth context", isAuth);
+    const location = useLocation();  // Get current location
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -20,20 +19,31 @@ export const AuthProvider = ({ children }) => {
                     if (res.data.activated) {
                         setIsAuth(true);
                         setAuthorities(res.data.authorities || []);
+                    } else {
+                        setIsAuth(false);
+                        // Optionally, you might want to clear the token here if the account is not activated
+                        localStorage.removeItem('token');
                     }
                 })
-                .catch(() => setIsAuth(false))
+                .catch((error) => {
+                    console.error('Error checking authentication:', error);
+                    setIsAuth(false);
+                    localStorage.removeItem('token');  // Clear token on error
+                })
                 .finally(() => setLoading(false));
         } else {
             setLoading(false);
             setIsAuth(false);
-            navigate('/login');
+            // Only redirect to login if not on login page
+            if (location.pathname !== '/login') {
+                navigate('/login', { replace: true });
+            }
         }
-    }, []);
+    }, [navigate, location]);
 
     const loginRedirect = () => {
-        if (!isAuth && !loading) {
-            navigate('/login');
+        if (!isAuth && !loading && location.pathname !== '/login') {
+            navigate('/login', { replace: true });
         }
     };
 

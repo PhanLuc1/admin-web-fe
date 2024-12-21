@@ -9,10 +9,11 @@ import MainLayout from './pages/layouts';
 const App = () => {
   const { isAuth, authorities } = useContext(AuthContext);
 
-  console.log("isAuth", isAuth);
   useEffect(() => {})
 
+
   return (
+      <>
       <Routes>
         {isAuth ? (
             <Route path="/" element={<MainLayout />}>
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
         )}
       </Routes>
+      </>
   );
 };
 

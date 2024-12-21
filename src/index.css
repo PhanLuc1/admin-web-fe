@@ -19,4 +19,15 @@ code {
 .ant-table-pagination {
   position: sticky;
   bottom: 15px;
+  padding: 10px;
+  background: #fff;
+}
+
+.btn {
+  background: #2F80ED;
+  color: white;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-weight: 500;
 }
